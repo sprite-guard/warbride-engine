@@ -22,6 +22,7 @@ Set its text using `<<` followed by a string containing all of the text that you
 
 `.advance` moves the text forwards one page
 `.back` moves the text back one page
+`.reset` takes you back to the first page
 
 Set `.line_height` to change the spacing between lines.
 
@@ -51,4 +52,31 @@ Takes a hash:
 }
 ```
 
-Passes through `.advance` and `.back`, supports `<<` but requires a hash with `:name` and `:text` fields.
+Passes through `.advance`, `.back`, and `.reset`; supports `<<` but requires a hash with `:name` and `:text` fields instead of just text.
+
+# StoryEvent
+
+This is the base unit of time, essentially a section of uninterrupted dialogue.
+
+The constructor only takes the StoryBox that it will be writing to.
+
+Once constructed, use `<<` to add dialogue event hashes with the following format:
+
+```ruby
+args.state.story << {
+  name: "whoever is speaking",
+  text: %Q(
+Everything that one character says at a particular time.
+The %Q notation in Ruby is a variant of the Heredoc, a
+multiline string that can be used for long sections of
+text. You could also pull this as a string from a text
+file that you keep somewhere else, and in fact that is
+probably better practice.
+
+There is a .strip at the end of this doc to remove the
+blank first line at the top of the Heredoc.
+).strip
+}
+```
+
+Any number of these dialogue event hashes can be appended to a StoryEvent, and they will all play together in sequence. It's possible to use `.advance` and `.back` here just like as before, this will move through dialogue pages when they are available, and will move between dialogue events when it reaches the last page of a particular event.
