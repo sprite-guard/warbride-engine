@@ -2,6 +2,8 @@ require "app/continuebox.rb"
 
 class StoryBox
 
+  attr_accessor :body
+
   # descriptor format: 
   # StoryBox.new({
   #   body: {x: 310, y: 230, w: 60, h: 7, font: "font/euler.otf"},
