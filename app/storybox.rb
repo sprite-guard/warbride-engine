@@ -43,4 +43,8 @@ class StoryBox
     @body.back
   end
   
+  def reset
+    @body.reset
+  end
+  
 end

@@ -40,6 +40,9 @@ class ContinueBox
   end
   
   def back
+    if @line_number == 0
+      return false
+    end
     @line_number = @line_number - @h
     if @line_number < 0
       @line_number = 0
@@ -47,6 +50,11 @@ class ContinueBox
     if @page > 0
       @page -= 1
     end
+  end
+  
+  def reset
+    @line_number = 0
+    @page = 0
   end
   
   def labels
