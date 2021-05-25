@@ -1,4 +1,5 @@
 require "app/storybox.rb"
+require "app/storyevent.rb"
 
 def quick_reset
   $gtk.reset
@@ -14,18 +15,48 @@ def setup args
     args.state.debug_messages = []
     $gtk.console.animation_duration = 0
     args.state.layout.dialogue = StoryBox.new({
-      body: {x: 310, y: 230, w: 60, h: 7, font: "font/euler.otf"},
+      body: {x: 310, y: 230, w: 59, h: 7, font: "font/euler.otf"},
       name: {x: 310, y: 280, font: "font/euler.otf"}
     })
     
-    args.state.layout.dialogue << {
+    args.state.story = StoryEvent.new(args.state.layout.dialogue)
+    
+    args.state.story << {
+      name: "Warbride",
+      text: "I am Warbride! I am wedded to war! Conquest is my love, and battle is my passion. The whole world shall bow before me, and all who oppose me will fall in their time. If you love life, surrender now, but if you do not, then face me in battle."
+    }
+    
+    args.state.story << {
+      name: "Some guy",
+      text: %Q(
+      That's a nice speech, very inspirational. Tell me though, does it work for you? It sounds like you've rehearsed it pretty well, maybe you've used it on many other warriors, many of them much more weak-willed than I am. So tell me, has it ever worked for you, even on the most timid of opponents?
+      
+      If you need time to think of one, I can wait. I'm in no rush.
+    ).strip
+    }
+    
+    args.state.story << {
       name: "Warbride",
       text: %Q(
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non nulla nec mauris vulputate consequat a eget risus. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Nullam non neque eu erat rutrum finibus. Curabitur iaculis risus justo, non congue magna iaculis ut. Nunc ipsum sapien, cursus eget pharetra nec, molestie eget mauris. Praesent cursus mi in elementum dictum. Morbi dictum odio magna, nec malesuada turpis porttitor at. Aliquam aliquam accumsan metus at auctor. Vivamus urna enim, commodo nec molestie sed, posuere eu tellus. Aenean elementum nisl sed posuere aliquet. Integer aliquet, ex sed rhoncus tempor, mi velit tempus enim, in imperdiet lacus neque id diam. Sed vitae urna lacinia, dignissim odio eget, maximus felis. Sed sapien purus, rutrum nec metus a, semper facilisis ex.
-
-Donec id neque et magna ornare dapibus vitae in neque. Morbi ex sem, molestie ut sagittis eget, bibendum in odio. Maecenas dignissim, est quis semper volutpat, ipsum ipsum posuere enim, ac lobortis risus leo tincidunt arcu. Ut sed vulputate dolor, iaculis laoreet libero. Cras velit metus, pretium eget sodales vitae, venenatis a nisl. Donec vitae augue dictum, porta nunc id, mattis velit. Phasellus ornare lorem vitae elit hendrerit, mollis auctor mauris maximus. Donec fermentum ligula a nisl fermentum consectetur. Duis massa elit, condimentum et ligula et, lobortis porttitor tellus. Curabitur in sem volutpat, commodo ex ac, tincidunt turpis. Integer ultricies tristique orci vitae ullamcorper.
+        The great general Another Guy, known for his wisdom and his devotion to his people, showed great prudence.
+        
+        He knew that he could not beat me, and he knew that I would crush his people and burn their villages, and take their food for my soldiers. Instead he came, not to fight, but to bargain.
+        
+        I will admit that I was disappointed, but I am only half-barbaric, and so I put forward my demands to him. He, putting the wellbeing of his people above his own ego and desire for conquest, handed over rulership.
+        
+        It is not so bad, living in my empire. We are prosperous, and cosmopolitan. Within my empire there is complete freedom of movement, and so all of the cultures absorbed into my empire mingle freely, and exchange their ideas.
+        
+        You think that because I am a barbarian, my land must be barbaric, but I have no desire to crush a people who are loyal to me, who submit to my law and my rule.
+        
+        But how is your land? Do your people prosper?
       ).strip
     }
+    
+    args.state.story << {
+      name: "Some Guy's lieutenant",
+      text: "Do not believe her, my lord. Word of her atrocities has spread throughout the land. She brings only death and suffering wherever she goes."
+    }
+    args.state.story.start
   end
   
   args.state.layout.background ||= {
@@ -46,14 +77,14 @@ Donec id neque et magna ornare dapibus vitae in neque. Morbi ex sem, molestie ut
     angle: 0
   }
 end
- 
+
 def tick args
   setup args
   if args.inputs.keyboard.key_down.space
-    args.state.layout.dialogue.advance
+    args.state.story.advance
   end
   if args.inputs.keyboard.key_down.backspace
-    args.state.layout.dialogue.back
+    args.state.story.back
   end
   draw args
   args.state.session_tick += 1
